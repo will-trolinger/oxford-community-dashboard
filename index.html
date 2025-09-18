@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oxford, Mississippi - Community Impact Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Oxford, Mississippi</h1>
+            <p class="hero-subtitle">Community Impact Assessment</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="stat-number">48,655</span>
+                    <span class="stat-label">Population</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="stat-number">3</span>
+                    <span class="stat-label">Core Pillars</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="stat-number">52</span>
+                    <span class="stat-label">Key Metrics</span>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll to explore</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- Executive Summary -->
+    <section class="summary-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2>Executive Summary</h2>
+                <p>Oxford demonstrates strong fundamentals across health, talent, and competitiveness metrics, with particular strengths in educational attainment and university town vitality.</p>
+            </div>
+
+            <div class="summary-grid fade-in">
+                <div class="summary-card health">
+                    <h3>Health & Wellness</h3>
+                    <div class="summary-score">72</div>
+                    <p>Strong healthcare access through university medical center, with opportunities in preventive care access.</p>
+                    <div class="key-metrics">
+                        <span class="metric-tag">Dental Care Access: 75%</span>
+                        <span class="metric-tag">Health Worker LQ: 1.8</span>
+                    </div>
+                </div>
+
+                <div class="summary-card talent">
+                    <h3>Talent Pipeline</h3>
+                    <div class="summary-score">89</div>
+                    <p>Exceptional educational attainment driven by University of Mississippi, though retention challenges persist.</p>
+                    <div class="key-metrics">
+                        <span class="metric-tag">College Graduation: 89%</span>
+                        <span class="metric-tag">Student Retention: 58%</span>
+                    </div>
+                </div>
+
+                <div class="summary-card competitiveness">
+                    <h3>Regional Competitiveness</h3>
+                    <div class="summary-score">67</div>
+                    <p>University town benefits with room for economic diversification and infrastructure investment.</p>
+                    <div class="key-metrics">
+                        <span class="metric-tag">Net Migration: +2.3%</span>
+                        <span class="metric-tag">Quality of Life: 76</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Health & Wellness Pillar -->
+    <section class="pillar-section health-pillar">
+        <div class="container">
+            <div class="pillar-header fade-in">
+                <span class="pillar-number">01</span>
+                <div class="pillar-header-content">
+                    <h2>Health & Wellness</h2>
+                    <p>Measuring community health outcomes, healthcare access, and social determinants of health across Oxford.</p>
+                </div>
+            </div>
+
+            <!-- North Star Metrics -->
+            <div class="metrics-section fade-in">
+                <h3>North Star Metrics</h3>
+                <div class="chart-container">
+                    <div class="chart-card large">
+                        <h4>Chronic Disease Rates vs. State Average</h4>
+                        <canvas id="chronicDiseaseChart"></canvas>
+                    </div>
+                    <div class="metrics-sidebar">
+                        <div class="metric-item">
+                            <span class="metric-value">12.4%</span>
+                            <span class="metric-label">Avoidable Death Rate</span>
+                            <span class="metric-change positive">-2.1% vs state</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value">18.2%</span>
+                            <span class="metric-label">Mental Health Incidence</span>
+                            <span class="metric-change neutral">+0.8% vs state</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value">1.8</span>
+                            <span class="metric-label">Health Worker LQ</span>
+                            <span class="metric-change positive">Above average</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Metrics -->
+            <div class="metrics-section fade-in">
+                <h3>Healthcare Access & Infrastructure</h3>
+                <div class="input-metrics-grid">
+                    <div class="chart-card">
+                        <h4>Dental Care Access Trend</h4>
+                        <canvas id="dentalAccessChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Healthcare Facility Coverage</h4>
+                        <div class="facility-map">
+                            <div class="map-legend">
+                                <span class="legend-item hospital">Hospital</span>
+                                <span class="legend-item clinic">Clinic</span>
+                                <span class="legend-item pharmacy">Pharmacy</span>
+                            </div>
+                            <div class="coverage-stats">
+                                <div class="coverage-item">
+                                    <span class="coverage-number">1</span>
+                                    <span class="coverage-label">Major Hospital</span>
+                                </div>
+                                <div class="coverage-item">
+                                    <span class="coverage-number">12</span>
+                                    <span class="coverage-label">Primary Care</span>
+                                </div>
+                                <div class="coverage-item">
+                                    <span class="coverage-number">8</span>
+                                    <span class="coverage-label">Pharmacies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Talent Pipeline Pillar -->
+    <section class="pillar-section talent-pillar">
+        <div class="container">
+            <div class="pillar-header fade-in">
+                <span class="pillar-number">02</span>
+                <div class="pillar-header-content">
+                    <h2>Talent Pipeline</h2>
+                    <p>Analyzing educational outcomes, workforce development, and talent retention in the Oxford community.</p>
+                </div>
+            </div>
+
+            <!-- North Star Metrics -->
+            <div class="metrics-section fade-in">
+                <h3>Educational Attainment & Workforce</h3>
+                <div class="chart-container">
+                    <div class="chart-card large">
+                        <h4>Education Levels vs. National Average</h4>
+                        <canvas id="educationChart"></canvas>
+                    </div>
+                    <div class="metrics-sidebar">
+                        <div class="metric-item">
+                            <span class="metric-value">58%</span>
+                            <span class="metric-label">Student Retention Rate</span>
+                            <span class="metric-change negative">Brain Drain Challenge</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value">94.2%</span>
+                            <span class="metric-label">Labor Force Participation</span>
+                            <span class="metric-change positive">+8.1% vs state</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value">3.2%</span>
+                            <span class="metric-label">Underemployment Rate</span>
+                            <span class="metric-change positive">Below average</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Metrics -->
+            <div class="metrics-section fade-in">
+                <h3>Educational Infrastructure</h3>
+                <div class="input-metrics-grid">
+                    <div class="chart-card doughnut-chart">
+                        <h4>Graduation Rates by Level</h4>
+                        <canvas id="graduationChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Young Firm Employment</h4>
+                        <div class="employment-stats">
+                            <div class="stat-circle">
+                                <span class="circle-number">24%</span>
+                                <span class="circle-label">Young Firm Share</span>
+                            </div>
+                            <div class="knowledge-intensity">
+                                <h5>Knowledge Intensity Sectors</h5>
+                                <div class="sector-list">
+                                    <div class="sector-item">
+                                        <span class="sector-name">Professional Services</span>
+                                        <span class="sector-value">18%</span>
+                                    </div>
+                                    <div class="sector-item">
+                                        <span class="sector-name">Information Technology</span>
+                                        <span class="sector-value">12%</span>
+                                    </div>
+                                    <div class="sector-item">
+                                        <span class="sector-name">Finance & Insurance</span>
+                                        <span class="sector-value">8%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Regional Competitiveness Pillar -->
+    <section class="pillar-section competitiveness-pillar">
+        <div class="container">
+            <div class="pillar-header fade-in">
+                <span class="pillar-number">03</span>
+                <div class="pillar-header-content">
+                    <h2>Regional Competitiveness</h2>
+                    <p>Evaluating economic vitality, quality of life factors, and competitive positioning within the region.</p>
+                </div>
+            </div>
+
+            <!-- North Star Metrics -->
+            <div class="metrics-section fade-in">
+                <h3>Economic Performance & Quality of Life</h3>
+                <div class="chart-container">
+                    <div class="chart-card large">
+                        <h4>Net Migration & Economic Indicators</h4>
+                        <canvas id="migrationChart"></canvas>
+                    </div>
+                    <div class="metrics-sidebar">
+                        <div class="metric-item">
+                            <span class="metric-value">$52,180</span>
+                            <span class="metric-label">Median Household Income</span>
+                            <span class="metric-change positive">+12% vs state</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value">+2.3%</span>
+                            <span class="metric-label">Net Migration Rate</span>
+                            <span class="metric-change positive">Attracting residents</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="metric-value">76</span>
+                            <span class="metric-label">Quality of Life Index</span>
+                            <span class="metric-change positive">Above regional avg</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Infrastructure & Amenities -->
+            <div class="metrics-section fade-in">
+                <h3>Infrastructure & Amenities</h3>
+                <div class="input-metrics-grid">
+                    <div class="chart-card">
+                        <h4>Broadband Infrastructure Quality</h4>
+                        <canvas id="infrastructureChart"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h4>Community Amenities</h4>
+                        <div class="amenities-grid">
+                            <div class="amenity-category">
+                                <h5>Commercial</h5>
+                                <div class="amenity-score">82</div>
+                                <p>Shopping, dining, entertainment options</p>
+                            </div>
+                            <div class="amenity-category">
+                                <h5>Outdoor</h5>
+                                <div class="amenity-score">74</div>
+                                <p>Parks, recreational facilities, greenspace</p>
+                            </div>
+                            <div class="amenity-category">
+                                <h5>Cultural</h5>
+                                <div class="amenity-score">91</div>
+                                <p>Museums, arts venues, cultural events</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Peer Comparison -->
+    <section class="comparison-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2>Peer Micropolitan Comparison</h2>
+                <p>How Oxford Micropolitan Statistical Area compares to similar university-centered micros across the Southeast</p>
+            </div>
+
+            <div class="comparison-container fade-in">
+                <div class="chart-card">
+                    <h4>Geographic Distribution</h4>
+                    <div id="peerMap"></div>
+                </div>
+                <div class="chart-card">
+                    <h4>Performance Comparison</h4>
+                    <canvas id="peerComparisonChart"></canvas>
+                </div>
+            </div>
+
+            <div class="peer-insights fade-in">
+                <div class="insight-card">
+                    <h4>Similar Micropolitan Areas</h4>
+                    <div class="peer-list">
+                        <div class="peer-item">
+                            <span class="peer-name">Tuscaloosa, AL Micro</span>
+                            <span class="similarity">92% similar</span>
+                        </div>
+                        <div class="peer-item">
+                            <span class="peer-name">Auburn-Opelika, AL Micro</span>
+                            <span class="similarity">89% similar</span>
+                        </div>
+                        <div class="peer-item">
+                            <span class="peer-name">Starkville, MS Micro</span>
+                            <span class="similarity">87% similar</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Insights -->
+    <section class="insights-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2>Key Insights & Opportunities</h2>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-item fade-in">
+                    <h4>Strengths</h4>
+                    <ul>
+                        <li>Strong educational ecosystem with University of Mississippi</li>
+                        <li>Above-average healthcare worker concentration</li>
+                        <li>Cultural amenities and university town vitality</li>
+                        <li>Positive net migration trends</li>
+                    </ul>
+                </div>
+
+                <div class="insight-item fade-in">
+                    <h4>Opportunities</h4>
+                    <ul>
+                        <li>Improve student retention to combat brain drain</li>
+                        <li>Enhance infrastructure investment for economic diversification</li>
+                        <li>Expand broadband access for rural areas</li>
+                        <li>Develop more tech industry presence</li>
+                    </ul>
+                </div>
+
+                <div class="insight-item fade-in">
+                    <h4>Action Items</h4>
+                    <ul>
+                        <li>Create entrepreneur-in-residence programs</li>
+                        <li>Improve public transportation connectivity</li>
+                        <li>Develop affordable housing initiatives</li>
+                        <li>Strengthen university-community partnerships</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
