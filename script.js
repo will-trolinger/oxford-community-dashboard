@@ -454,7 +454,7 @@ function createPeerComparisonConfig() {
                     pointHoverRadius: 15
                 },
                 {
-                    label: 'Tuscaloosa Micro',
+                    label: 'Clemson Micro',
                     data: [{x: 68, y: 85}],
                     backgroundColor: '#3b82f6',
                     borderColor: '#3b82f6',
@@ -462,7 +462,7 @@ function createPeerComparisonConfig() {
                     pointHoverRadius: 10
                 },
                 {
-                    label: 'Auburn-Opelika Micro',
+                    label: 'Boone Micro',
                     data: [{x: 75, y: 87}],
                     backgroundColor: '#10b981',
                     borderColor: '#10b981',
@@ -593,20 +593,20 @@ function initializePeerMap() {
             isOxford: true
         },
         {
-            name: 'Tuscaloosa, AL Micro',
-            label: 'Tuscaloosa',
-            lat: 33.2098,
-            lng: -87.5692,
+            name: 'Clemson, SC Micro',
+            label: 'Clemson Micro',
+            lat: 34.6834,
+            lng: -82.8374,
             health: 68,
             talent: 85,
             competitiveness: 71,
             color: '#3b82f6'
         },
         {
-            name: 'Auburn-Opelika, AL Micro',
-            label: 'Auburn',
-            lat: 32.6099,
-            lng: -85.4808,
+            name: 'Boone, NC Micro',
+            label: 'Boone Micro',
+            lat: 36.2168,
+            lng: -81.6746,
             health: 75,
             talent: 87,
             competitiveness: 73,
@@ -614,7 +614,7 @@ function initializePeerMap() {
         },
         {
             name: 'Starkville, MS Micro',
-            label: 'Starkville',
+            label: 'Starkville Micro',
             lat: 33.4504,
             lng: -88.8184,
             health: 65,
@@ -624,7 +624,7 @@ function initializePeerMap() {
         },
         {
             name: 'Athens-Clarke County, GA Micro',
-            label: 'Athens',
+            label: 'Athens Micro',
             lat: 33.9519,
             lng: -83.3576,
             health: 82,
