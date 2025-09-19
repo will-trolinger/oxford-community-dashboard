@@ -38,3 +38,4 @@ pids
 .env.production.local
 
 CLAUDE.md
+data_pulling/

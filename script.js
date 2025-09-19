@@ -6,12 +6,82 @@ Chart.defaults.font.size = 12;
 Chart.defaults.color = '#64748b';
 Chart.defaults.borderColor = '#e2e8f0';
 
+// Global data storage
+let dashboardData = null;
+
 // Initialize dashboard
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    await loadDashboardData();
     initializeScrollAnimations();
     initializeCharts();
     initializePeerMap();
+    updateHeroStats();
 });
+
+// Load dashboard data from JSON
+async function loadDashboardData() {
+    try {
+        const response = await fetch('./data/dashboard-metrics.json');
+        dashboardData = await response.json();
+        console.log('Dashboard data loaded successfully');
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        // Fallback to hardcoded data if JSON fails to load
+        dashboardData = null;
+    }
+}
+
+// Update hero statistics and summary cards with real data
+function updateHeroStats() {
+    if (!dashboardData) return;
+
+    // Update hero stats
+    const stats = document.querySelectorAll('.stat-number');
+    if (stats.length >= 3) {
+        stats[0].textContent = dashboardData.heroStats.population.toLocaleString();
+        stats[1].textContent = dashboardData.heroStats.pillars;
+        stats[2].textContent = dashboardData.heroStats.metrics;
+    }
+
+    // Update summary card scores
+    const healthScore = document.querySelector('.summary-card.health .summary-score');
+    const talentScore = document.querySelector('.summary-card.talent .summary-score');
+    const competitivenessScore = document.querySelector('.summary-card.competitiveness .summary-score');
+
+    if (healthScore) healthScore.textContent = dashboardData.summaryCards.health.score;
+    if (talentScore) talentScore.textContent = dashboardData.summaryCards.talent.score;
+    if (competitivenessScore) competitivenessScore.textContent = dashboardData.summaryCards.competitiveness.score;
+
+    // Update sidebar metrics
+    updateSidebarMetrics();
+}
+
+// Update sidebar metrics with real data
+function updateSidebarMetrics() {
+    if (!dashboardData?.sidebarMetrics) return;
+
+    const sections = ['health', 'talent', 'competitiveness'];
+
+    sections.forEach(section => {
+        const sectionData = dashboardData.sidebarMetrics[section];
+        const metricItems = document.querySelectorAll(`.${section}-pillar .metric-item`);
+
+        metricItems.forEach((item, index) => {
+            if (sectionData[index]) {
+                const valueEl = item.querySelector('.metric-value');
+                const labelEl = item.querySelector('.metric-label');
+                const changeEl = item.querySelector('.metric-change');
+
+                if (valueEl) valueEl.textContent = sectionData[index].value;
+                if (labelEl) labelEl.textContent = sectionData[index].label;
+                if (changeEl) {
+                    changeEl.textContent = sectionData[index].change;
+                    changeEl.className = `metric-change ${sectionData[index].type}`;
+                }
+            }
+        });
+    });
+}
 
 // Intersection Observer for scroll-triggered animations
 function initializeScrollAnimations() {
@@ -122,20 +192,26 @@ function animateChart(chartId) {
 
 // Chart Configurations
 function createChronicDiseaseConfig() {
+    const chartData = dashboardData?.chartData?.chronicDisease || {
+        labels: ['Diabetes', 'Heart Disease', 'COPD', 'Cancer', 'Stroke'],
+        oxford: [8.2, 5.8, 4.1, 22.4, 3.2],
+        stateAverage: [11.1, 7.2, 5.9, 24.8, 4.1]
+    };
+
     return {
         type: 'bar',
         data: {
-            labels: ['Diabetes', 'Heart Disease', 'COPD', 'Cancer', 'Stroke'],
+            labels: chartData.labels,
             datasets: [
                 {
                     label: 'Oxford',
-                    data: [8.2, 5.8, 4.1, 22.4, 3.2],
+                    data: chartData.oxford,
                     backgroundColor: '#3b82f6',
                     borderRadius: 4
                 },
                 {
                     label: 'Mississippi Average',
-                    data: [11.1, 7.2, 5.9, 24.8, 4.1],
+                    data: chartData.stateAverage,
                     backgroundColor: '#e2e8f0',
                     borderRadius: 4
                 }
@@ -174,13 +250,18 @@ function createChronicDiseaseConfig() {
 }
 
 function createDentalAccessConfig() {
+    const data = dashboardData?.chartData?.dentalAccess || {
+        years: ['2019', '2020', '2021', '2022', '2023'],
+        rates: [68, 71, 73, 75, 78]
+    };
+
     return {
         type: 'line',
         data: {
-            labels: ['2019', '2020', '2021', '2022', '2023'],
+            labels: data.years,
             datasets: [{
                 label: 'Dental Care Access Rate',
-                data: [68, 71, 73, 75, 78],
+                data: data.rates,
                 borderColor: '#10b981',
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
                 fill: true,
@@ -220,14 +301,20 @@ function createDentalAccessConfig() {
 }
 
 function createEducationConfig() {
+    const data = dashboardData?.chartData?.education || {
+        labels: ['High School', 'Some College', 'Associates', 'Bachelors', 'Masters', 'Doctoral'],
+        oxford: [89, 45, 22, 35, 20, 8],
+        national: [85, 38, 18, 28, 15, 5]
+    };
+
     return {
         type: 'radar',
         data: {
-            labels: ['High School', 'Some College', 'Associates', 'Bachelors', 'Masters', 'Doctoral'],
+            labels: data.labels,
             datasets: [
                 {
                     label: 'Oxford',
-                    data: [89, 45, 22, 35, 20, 8],
+                    data: data.oxford,
                     borderColor: '#3b82f6',
                     backgroundColor: 'rgba(59, 130, 246, 0.1)',
                     pointBackgroundColor: '#3b82f6',
@@ -235,7 +322,7 @@ function createEducationConfig() {
                 },
                 {
                     label: 'National Average',
-                    data: [85, 38, 18, 28, 15, 5],
+                    data: data.national,
                     borderColor: '#64748b',
                     backgroundColor: 'rgba(100, 116, 139, 0.1)',
                     pointBackgroundColor: '#64748b',
@@ -277,12 +364,17 @@ function createEducationConfig() {
 }
 
 function createGraduationConfig() {
+    const data = dashboardData?.chartData?.graduation || {
+        labels: ['High School', 'Community College', 'University', 'Graduate School'],
+        rates: [93, 78, 89, 85]
+    };
+
     return {
         type: 'doughnut',
         data: {
-            labels: ['High School', 'Community College', 'University', 'Graduate School'],
+            labels: data.labels,
             datasets: [{
-                data: [93, 78, 89, 85],
+                data: data.rates,
                 backgroundColor: [
                     '#10b981',
                     '#3b82f6',
@@ -319,14 +411,20 @@ function createGraduationConfig() {
 }
 
 function createMigrationConfig() {
+    const data = dashboardData?.chartData?.migration || {
+        years: ['2018', '2019', '2020', '2021', '2022', '2023'],
+        netMigration: [1.2, 1.8, 0.9, 2.1, 2.8, 2.3],
+        incomeGrowth: [2.1, 3.2, 1.8, 4.5, 5.2, 4.8]
+    };
+
     return {
         type: 'line',
         data: {
-            labels: ['2018', '2019', '2020', '2021', '2022', '2023'],
+            labels: data.years,
             datasets: [
                 {
                     label: 'Net Migration Rate',
-                    data: [1.2, 1.8, 0.9, 2.1, 2.8, 2.3],
+                    data: data.netMigration,
                     borderColor: '#8b5cf6',
                     backgroundColor: 'rgba(139, 92, 246, 0.1)',
                     fill: true,
@@ -339,7 +437,7 @@ function createMigrationConfig() {
                 },
                 {
                     label: 'Median Income Growth',
-                    data: [2.1, 3.2, 1.8, 4.5, 5.2, 4.8],
+                    data: data.incomeGrowth,
                     borderColor: '#f59e0b',
                     backgroundColor: 'rgba(245, 158, 11, 0.1)',
                     fill: false,
@@ -398,13 +496,18 @@ function createMigrationConfig() {
 }
 
 function createInfrastructureConfig() {
+    const data = dashboardData?.chartData?.infrastructure || {
+        categories: ['Broadband Speed', 'Coverage %', 'Reliability', 'Affordability'],
+        scores: [78, 85, 72, 68]
+    };
+
     return {
         type: 'bar',
         data: {
-            labels: ['Broadband Speed', 'Coverage %', 'Reliability', 'Affordability'],
+            labels: data.categories,
             datasets: [{
                 label: 'Infrastructure Quality Score',
-                data: [78, 85, 72, 68],
+                data: data.scores,
                 backgroundColor: [
                     '#10b981',
                     '#3b82f6',
@@ -441,51 +544,37 @@ function createInfrastructureConfig() {
 }
 
 function createPeerComparisonConfig() {
+    const oxfordData = dashboardData?.primaryArea?.pillars || { health: 72, talent: 89 };
+    const peerAreas = dashboardData?.peerAreas || [];
+
+    // Create datasets starting with Oxford
+    const datasets = [
+        {
+            label: 'Oxford',
+            data: [{x: oxfordData.health, y: oxfordData.talent}],
+            backgroundColor: '#ef4444',
+            borderColor: '#ef4444',
+            pointRadius: 12,
+            pointHoverRadius: 15
+        }
+    ];
+
+    // Add peer areas
+    peerAreas.forEach(area => {
+        datasets.push({
+            label: area.name,
+            data: [{x: area.pillars.health, y: area.pillars.talent}],
+            backgroundColor: area.color,
+            borderColor: area.color,
+            pointRadius: 8,
+            pointHoverRadius: 10
+        });
+    });
+
     return {
         type: 'scatter',
         data: {
-            datasets: [
-                {
-                    label: 'Oxford',
-                    data: [{x: 72, y: 89}],
-                    backgroundColor: '#ef4444',
-                    borderColor: '#ef4444',
-                    pointRadius: 12,
-                    pointHoverRadius: 15
-                },
-                {
-                    label: 'Clemson Micro',
-                    data: [{x: 68, y: 85}],
-                    backgroundColor: '#3b82f6',
-                    borderColor: '#3b82f6',
-                    pointRadius: 8,
-                    pointHoverRadius: 10
-                },
-                {
-                    label: 'Boone Micro',
-                    data: [{x: 75, y: 87}],
-                    backgroundColor: '#10b981',
-                    borderColor: '#10b981',
-                    pointRadius: 8,
-                    pointHoverRadius: 10
-                },
-                {
-                    label: 'Starkville Micro',
-                    data: [{x: 65, y: 82}],
-                    backgroundColor: '#8b5cf6',
-                    borderColor: '#8b5cf6',
-                    pointRadius: 8,
-                    pointHoverRadius: 10
-                },
-                {
-                    label: 'Athens-Clarke Micro',
-                    data: [{x: 82, y: 91}],
-                    backgroundColor: '#f59e0b',
-                    borderColor: '#f59e0b',
-                    pointRadius: 8,
-                    pointHoverRadius: 10
-                }
-            ]
+            datasets: datasets
         },
         options: {
             responsive: true,
@@ -579,59 +668,43 @@ document.addEventListener('DOMContentLoaded', staggerSummaryCards);
 
 // Initialize Peer Micropolitan Map
 function initializePeerMap() {
-    // Micropolitan area coordinates (approximate centers)
+    // Get micropolitan areas from JSON data or use fallback
+    const primaryArea = dashboardData?.primaryArea || {
+        name: 'Oxford, MS',
+        coordinates: { lat: 34.3664, lng: -89.5192 },
+        pillars: { health: 72, talent: 89, competitiveness: 67 }
+    };
+
+    const peerAreas = dashboardData?.peerAreas || [
+        { name: 'Clemson, SC Micro', coordinates: { lat: 34.6834, lng: -82.8374 }, pillars: { health: 68, talent: 85, competitiveness: 71 }, color: '#3b82f6' },
+        { name: 'Boone, NC Micro', coordinates: { lat: 36.2168, lng: -81.6746 }, pillars: { health: 75, talent: 87, competitiveness: 73 }, color: '#10b981' },
+        { name: 'Starkville, MS Micro', coordinates: { lat: 33.4504, lng: -88.8184 }, pillars: { health: 65, talent: 82, competitiveness: 69 }, color: '#8b5cf6' },
+        { name: 'Athens-Clarke County, GA Micro', coordinates: { lat: 33.9519, lng: -83.3576 }, pillars: { health: 82, talent: 91, competitiveness: 78 }, color: '#f59e0b' }
+    ];
+
+    // Create micropolitan areas array
     const micropolitanAreas = [
         {
-            name: 'Oxford, MS',
+            name: primaryArea.name,
             label: 'Oxford',
-            lat: 34.3664,
-            lng: -89.5192,
-            health: 72,
-            talent: 89,
-            competitiveness: 67,
+            lat: primaryArea.coordinates.lat,
+            lng: primaryArea.coordinates.lng,
+            health: primaryArea.pillars.health,
+            talent: primaryArea.pillars.talent,
+            competitiveness: primaryArea.pillars.competitiveness,
             color: '#ef4444',
             isOxford: true
         },
-        {
-            name: 'Clemson, SC Micro',
-            label: 'Clemson Micro',
-            lat: 34.6834,
-            lng: -82.8374,
-            health: 68,
-            talent: 85,
-            competitiveness: 71,
-            color: '#3b82f6'
-        },
-        {
-            name: 'Boone, NC Micro',
-            label: 'Boone Micro',
-            lat: 36.2168,
-            lng: -81.6746,
-            health: 75,
-            talent: 87,
-            competitiveness: 73,
-            color: '#10b981'
-        },
-        {
-            name: 'Starkville, MS Micro',
-            label: 'Starkville Micro',
-            lat: 33.4504,
-            lng: -88.8184,
-            health: 65,
-            talent: 82,
-            competitiveness: 69,
-            color: '#8b5cf6'
-        },
-        {
-            name: 'Athens-Clarke County, GA Micro',
-            label: 'Athens Micro',
-            lat: 33.9519,
-            lng: -83.3576,
-            health: 82,
-            talent: 91,
-            competitiveness: 78,
-            color: '#f59e0b'
-        }
+        ...peerAreas.map(area => ({
+            name: area.name,
+            label: area.name.split(',')[0] + ' Micro',
+            lat: area.coordinates.lat,
+            lng: area.coordinates.lng,
+            health: area.pillars.health,
+            talent: area.pillars.talent,
+            competitiveness: area.pillars.competitiveness,
+            color: area.color
+        }))
     ];
 
     // Initialize map centered on the Southeast region
